@@ -1,0 +1,14 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/appTheme</item>    <!-- 타이틀바 (앱 이름 나오는 바) -->
+        <item name="colorPrimaryDark">@color/appThemePrimary</item>     <!-- 상태바 (최상단 시간이랑 LTE, WiFi 보여주는 바) -->
+        <item name="colorAccent">@color/colorAccent</item>
+
+<!--&lt;!&ndash;        타이틀 바 없애기&ndash;&gt;-->
+<!--        <item name="windowActionBar">false</item>-->
+<!--        <item name="windowNoTitle">true</item>-->
+    </style>
+</resources>

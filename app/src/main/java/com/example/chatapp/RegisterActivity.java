@@ -121,6 +121,7 @@ public class RegisterActivity extends AppCompatActivity {
                             hashMap.put("name", "");    //will add later(e.g. edit profile)
                             hashMap.put("phone", "");   //same
                             hashMap.put("image", "");   //same
+                            hashMap.put("cover", "");   //same
                             //Firebase db instance
                             FirebaseDatabase db = FirebaseDatabase.getInstance();
                             //path to store user data named "Users"

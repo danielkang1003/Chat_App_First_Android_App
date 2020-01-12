@@ -1,65 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F1EDED"
     tools:context=".ProfileFragment">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@color/appTheme">
+            android:layout_height="wrap_content">
 
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="100dp">
+<!--            페이스 북 타임라인에 사진 설정하는 것 처럼-->
             <ImageView
-                android:id="@+id/iv_avatar"
-                android:layout_marginStart="20dp"
-                android:padding="5dp"
-                android:background="#70EC802E"
-                android:src="@drawable/ic_add_image"
-                android:layout_marginLeft="20dp"
-                android:layout_width="120dp"
-                android:layout_height="120dp"/>
+                android:id="@+id/iv_coverPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="fitXY"
+                android:background="@color/appTheme">
+
+            </ImageView>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/tv_name"
+                android:layout_height="120dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="100dp">
+                <ImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:padding="5dp"
+                    android:background="#70EC802E"
+                    android:src="@drawable/ic_default_img_white"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"/>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:textSize="25sp"
-                    android:textColor="@color/colorWhite"/>
-                <TextView
-                    android:id="@+id/tv_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textColor="@color/colorWhite"/>
-                <TextView
-                    android:id="@+id/tv_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textColor="@color/colorWhite"/>
+                    android:orientation="vertical"
+                    android:background="#77000000">
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:textSize="25sp"
+                        android:textColor="@color/colorWhite"/>
+                    <TextView
+                        android:id="@+id/tv_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:textColor="@color/colorWhite"/>
+                    <TextView
+                        android:id="@+id/tv_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:textColor="@color/colorWhite"/>
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </RelativeLayout>
+        </RelativeLayout>
 
-</ScrollView>
+    </ScrollView>
+
+<!--FAB 버튼: 리스트 뷰의 구조에서 많이 사용. 화면이 움직이더라도
+이 FAB 버튼은 최상위에 고정됨. 서브버튼이 나타나고 사라지도록 구성 가능-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_edit_white"
+        />
+
+
+</RelativeLayout>

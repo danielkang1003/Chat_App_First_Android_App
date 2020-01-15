@@ -55,7 +55,7 @@ public class DashboardActivity extends AppCompatActivity {
                     switch (menuItem.getItemId()){
                         case R.id.nav_home:
                             //home fragment transaction
-                            actionBar.setTitle("Home"); //change actionbar title
+                            actionBar.setTitle("홈"); //change actionbar title
                             HomeFragment fragment1 = new HomeFragment();
                             FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
                             ft1.replace(R.id.content, fragment1, "");
@@ -63,7 +63,7 @@ public class DashboardActivity extends AppCompatActivity {
                             return true;
                         case R.id.nav_profile:
                             //Profile fragment transaction
-                            actionBar.setTitle("Profile"); //change actionbar title
+                            actionBar.setTitle("프로필"); //change actionbar title
                             ProfileFragment fragment2 = new ProfileFragment();
                             FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
                             ft2.replace(R.id.content, fragment2, "");
@@ -71,11 +71,20 @@ public class DashboardActivity extends AppCompatActivity {
                             return true;
                         case R.id.nav_users:
                             //Users fragment transaction
-                            actionBar.setTitle("Users"); //change actionbar title
+                            actionBar.setTitle("친구"); //change actionbar title
                             UsersFragment fragment3 = new UsersFragment();
                             FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
                             ft3.replace(R.id.content, fragment3, "");
                             ft3.commit();
+                            return true;
+
+                        case R.id.nav_chat:
+                            //Users fragment transaction
+                            actionBar.setTitle("채팅방"); //change actionbar title
+                            ChatListFragment fragment4 = new ChatListFragment();
+                            FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
+                            ft4.replace(R.id.content, fragment4, "");
+                            ft4.commit();
                             return true;
                     }
 

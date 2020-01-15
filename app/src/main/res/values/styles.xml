@@ -11,4 +11,17 @@
 <!--        <item name="windowActionBar">false</item>-->
 <!--        <item name="windowNoTitle">true</item>-->
     </style>
+
+<!--  툴바를 사용하려면 액션바를 사용하지 않는 테마를 써야함  -->
+    <style name="AppThemeNo" parent="Theme.AppCompat.Light.NoActionBar">
+<!--        customizing -->
+        <item name="colorPrimary">@color/appTheme</item>
+        <item name="colorPrimaryDark">@color/appThemePrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionBarSize">49dp</item>
+        <item name="actionBarSize">49dp</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>

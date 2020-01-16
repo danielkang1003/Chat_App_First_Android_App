@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+    <!--이 xml은 자신의 메세지를 보여주는 메세지 창입니다.
+        보낸 메세지의 내용을 보여주고,
+        시간을 출력해서 사용자에게 보여줍니다
+    -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.github.abdularis.civ.AvatarImageView
+            android:id="@+id/Iv_profile"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_default_img"
+            app:strokeWidth="1dp"
+            app:view_state="IMAGE"
+            android:visibility="gone"
+            />
+        <TextView
+            android:id="@+id/Tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="date and time"
+            android:textColor="@color/colorBlack"
+            android:textSize="12sp"
+            />
+        <TextView
+            android:id="@+id/Tv_message"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:textColor="@color/colorBlack"
+            android:background="@drawable/bg_sender"
+            android:padding="15dp"
+            android:text="Your Message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/Tv_checked"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textAlignment="textEnd"
+        android:text="delivered"
+        android:visibility="gone"/>
+
+</LinearLayout>

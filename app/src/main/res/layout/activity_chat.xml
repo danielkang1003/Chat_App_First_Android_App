@@ -34,17 +34,19 @@
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp">
 <!--            상대방 이름-->
+
+
             <TextView
                 android:id="@+id/Tv_chat_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:text="Name"
                 android:textColor="@color/colorWhite"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginLeft="10dp"/>
+                android:textStyle="bold" />
 
-
+<!--            상태확인은 이후에 구현할 예정-->
             <TextView
                 android:id="@+id/Tv_user_status"
                 android:layout_width="match_parent"

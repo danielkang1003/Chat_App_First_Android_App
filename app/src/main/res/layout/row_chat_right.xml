@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:id="@+id/messageLayout">
     <!--이 xml은 자신의 메세지를 보여주는 메세지 창입니다.
         보낸 메세지의 내용을 보여주고,
         시간을 출력해서 사용자에게 보여줍니다

@@ -4,7 +4,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:id="@+id/messageLayout">
+
 <!--이 xml은 상대방의 메세지를 보여주는 메세지 창입니다.
     여기서 메세지의 내용을 보여주고,
     상대방의 프로필 사진,

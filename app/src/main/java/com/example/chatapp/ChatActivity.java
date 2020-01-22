@@ -8,7 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.autofill.UserData;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +24,13 @@ import android.widget.Toast;
 
 import com.example.chatapp.adapters.AdapterChat;
 import com.example.chatapp.models.ModelChat;
+import com.example.chatapp.models.ModelUsers;
+import com.example.chatapp.notifications.APIService;
+import com.example.chatapp.notifications.Client;
+import com.example.chatapp.notifications.Data;
+import com.example.chatapp.notifications.Response;
+import com.example.chatapp.notifications.Sender;
+import com.example.chatapp.notifications.Token;
 import com.github.abdularis.civ.AvatarImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,8 +43,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -56,6 +72,10 @@ public class ChatActivity extends AppCompatActivity {
     String hisUid;
     String myUid;
     String hisImage;
+
+    APIService apiService;
+    boolean notify = false;
+
 
     //메세지를 확인했는지 안했는지 확인하기위해
     ValueEventListener checkedListener;
@@ -80,6 +100,7 @@ public class ChatActivity extends AppCompatActivity {
         et_message = findViewById(R.id.Et_message);
         btn_send = findViewById(R.id.Btn_send);
 
+
         //init firebase auth
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -89,6 +110,9 @@ public class ChatActivity extends AppCompatActivity {
         //recyclerView properties
         rv_chat.setHasFixedSize(true);
         rv_chat.setLayoutManager(linearLayoutManager);
+
+        //api service 생성
+        apiService = Client.getRetrofit("https://fcm.googleapis.com").create(APIService.class);
 
 
         //adapterUsers에서 사용자가 상대방을 누르면 인텐트로 hisUid를 넘겨주게 되어있는데
@@ -112,7 +136,30 @@ public class ChatActivity extends AppCompatActivity {
                     String name = ds.child("name").getValue().toString();
                     hisImage = ""+ ds.child("image").getValue();
 
+                    //get value of onlineStatus
+                    String onlineStatus = ds.child("onlineStatus").getValue().toString();
+
+                    //get value of typing status
+                    String typingStatus = ds.child("typing").getValue().toString();
+                    //check typing status
+                    if(typingStatus.equals(myUid)){
+                        tv_user_status.setText("작성중...");
+                    }
+                    else {
+                        if(onlineStatus.equals("online")){
+                            tv_user_status.setText(onlineStatus);
+                        }
+                        else{
+                            //convert proper time and date
+                            Calendar calendar = Calendar.getInstance(Locale.KOREA);
+                            calendar.setTimeInMillis(Long.parseLong(onlineStatus));
+                            String dateTime = DateFormat.format("MM/dd/yyyy hh:mm aa", calendar).toString();
+                            tv_user_status.setText("마지막 로그인: " + dateTime);
+                        }
+                    }
+
                     tv_chat_name.setText(name);
+
 
                     //image received check
                     try{
@@ -136,6 +183,7 @@ public class ChatActivity extends AppCompatActivity {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                notify = true;
                 //get text from edit text
                 String message = et_message.getText().toString().trim();
 
@@ -148,6 +196,34 @@ public class ChatActivity extends AppCompatActivity {
                     //text is not empty send it
                     sendMessage(message);
                 }
+
+                //reset edit text after sending message
+                et_message.setText(""); //문자를 보내고 비워줘야 하므로. 계속있으면 이상하잖아?
+            }
+        });
+
+        //check edit text change listener
+        //상대 유저가 메세지 타이핑 하는게 감지되면 진입
+        et_message.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.toString().trim().length() == 0){
+                    //아무것도 감지가 안된다면 0이므로
+                    checkTypingStatus("noOne");
+                }
+                else{
+                    checkTypingStatus(hisUid);  //받는 사람 uid
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -208,7 +284,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(final String message) {
         /*
             채팅방 이름은 Chats로 해놨음. 사용자와 상대방간의 대화를 가지고 있음
             만약 다른 유저가 다른유저한테 메세지를 보내면 또다른 Chats을 만들겠지?
@@ -232,11 +308,56 @@ public class ChatActivity extends AppCompatActivity {
         hashMap.put("checked", false);
         databaseReference.child("Chats").push().setValue(hashMap);
 
-        //reset edit text after sending message
-        et_message.setText(""); //문자를 보내고 비워줘야 하므로. 계속있으 면 이상하잖아?
 
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ModelUsers user = dataSnapshot.getValue(ModelUsers.class);
+
+                if(notify){
+                    sendNotification(hisUid, user.getName(), message);
+                }
+                notify = false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
+    private void sendNotification(final String hisUid, final String name, final String message) {
+        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allTokens.orderByKey().equalTo(hisUid);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    Token token = ds.getValue(Token.class);
+                    Data data = new Data(myUid, name+":"+message, "New Message", hisUid, R.drawable.applogo);
+                    Sender sender = new Sender(data, token.getToken());
+                    apiService.sendNotification(sender).enqueue(new Callback<Response>() {
+                        @Override
+                        public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                            Toast.makeText(ChatActivity.this, ""+ response.message(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Response> call, Throwable t) {
+                            Toast.makeText(ChatActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     private void checkUserStatus(){
         //get current user
@@ -257,16 +378,51 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    private void checkOnlineStatus(String status){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("onlineStatus", status);
+
+        //update value of onlineStatus of current user
+        dbRef.updateChildren(hashMap);
+
+    }
+
+    private void checkTypingStatus(String typing){
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("typing", typing);
+
+        //update value of onlineStatus of current user
+        dbRef.updateChildren(hashMap);
+    }
+
     @Override
     protected void onStart() {
         checkUserStatus();
+        //set online
+        checkOnlineStatus("online");
         super.onStart();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        //get timestamp and set offline with last seen time stamp
+        //오프라인상태이면 마지막 접속 시간을 표시해주기 위해 timestamp 필요
+        String timesStamp = String.valueOf(System.currentTimeMillis()); //string으로 시간 변환해주기
+        checkOnlineStatus(timesStamp);  //status에 timeStamp 전달
+
+        //메세지를 상대방이 치고 있으면 보여줌
+        checkTypingStatus("noOne");
         userRefForChecked.removeEventListener(checkedListener);
+    }
+
+    @Override
+    protected void onResume() {
+        //set online
+        checkOnlineStatus("online");
+        super.onResume();
     }
 
     //메뉴바

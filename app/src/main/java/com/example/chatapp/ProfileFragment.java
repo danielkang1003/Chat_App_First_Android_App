@@ -396,7 +396,7 @@ public class ProfileFragment extends Fragment {
             case STORAGE_REQUEST_CODE:{
                 //갤러리를 골랐을 때, 권한 허용되었는지 확인
                 if(grantResults.length > 0){
-                    boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if(writeStorageAccepted){
                         //권한 모두 허용 되있음
                         pickFromGallery();
@@ -561,6 +561,9 @@ public class ProfileFragment extends Fragment {
         if(id == R.id.action_logout){
             firebaseAuth.signOut();
             checkUserStatus();
+        }
+        if(id == R.id.action_add_post){
+            startActivity(new Intent(getActivity(), AddPostActivity.class));
         }
 
         return super.onOptionsItemSelected(item);

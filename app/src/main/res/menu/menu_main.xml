@@ -3,11 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/action_logout"
-        android:title="Logout"/>
+        android:title="로그아웃"/>
 
     <item android:id="@+id/action_search"
-        android:title="Search"
+        android:title="검색"
         android:icon="@drawable/ic_menu_search"
         app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
+    <item android:id="@+id/action_add_post"
+        android:title="포스팅하기"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_add_white"/>
 </menu>

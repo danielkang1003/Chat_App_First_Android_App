@@ -410,8 +410,8 @@ public class ChatActivity extends AppCompatActivity {
         super.onPause();
         //get timestamp and set offline with last seen time stamp
         //오프라인상태이면 마지막 접속 시간을 표시해주기 위해 timestamp 필요
-        String timesStamp = String.valueOf(System.currentTimeMillis()); //string으로 시간 변환해주기
-        checkOnlineStatus(timesStamp);  //status에 timeStamp 전달
+        String timeStamp = String.valueOf(System.currentTimeMillis()); //string으로 시간 변환해주기
+        checkOnlineStatus(timeStamp);  //status에 timeStamp 전달
 
         //메세지를 상대방이 치고 있으면 보여줌
         checkTypingStatus("noOne");
